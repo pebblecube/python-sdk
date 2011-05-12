@@ -5,10 +5,6 @@ Pebblecube is videogame development library, includes: analytics, achievements, 
 
 This repository contains the open source Python SDK for the Pebblecube APIs.
 
-Basic usage:
-
-#TODO
-
 Reporting Issues
 --------
 
