@@ -6,7 +6,7 @@ sys.path.append("../src")
 import pebblecube
 import pprint
 
-pebble = pebblecube.PebblecubeApi(API_KEY, API_SECRET)
+pebble = pebblecube.PebblecubeApi(API_KEY, API_SECRET, "256")
 
 pebble.session.start()
 print(pebble.session)

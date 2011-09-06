@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import pebblecube
+import json
 
 class PebblecubeSession:
     sessionId = None
@@ -45,3 +46,49 @@ class PebblecubeSession:
                 self.stoppedAt = int(self.startedAt) + int(self.elapsedTime)
         else:
            raise pebblecube.PebblecubeException("session not started")
+
+    def send_event(self, events, user_token = None):
+        if self.sessionId:
+            params = {}
+            params["session_key"] = self.sessionId
+            print(json.dumps(events))
+            params["events"] = json.dumps(events)
+            if user_token:
+                params["user_token"] = user_token
+
+            result = self.pebble.request("/events/send", "POST", params)
+            if result:
+                return result["t"]
+            else:
+                raise pebblecube.PebblecubeException("invalid event")
+        else:
+            raise pebblecube.PebblecubeException("session not started")
+
+    def track_segment(self, map, segment = None, start = None, stop = None):
+        if self.sessionId:
+            if segment:
+                if start == None:
+                    start = time.gmtime(0)
+                
+                if stop == None:
+                    stop = time.gmtime(0)
+
+                params = {}
+                params["session_key"] = self.sessionId
+                params["map"] = map
+                params["start"] = start
+                params["stop"] = stop
+
+                print(json.dumps(segment))
+                params["segment"] = json.dumps(segment)
+
+                result = self.pebble.request("/maps/track", "POST", params)
+                if result:
+                    return result["s"]
+                else:
+                    raise pebblecube.PebblecubeException("invalid segment")
+            else:
+                raise pebblecube.PebblecubeException("invalid segment")
+        else:
+            raise pebblecube.PebblecubeException("session not started")
+
