@@ -9,7 +9,7 @@ Requirements
 --------
 
 * Python 2.6
-* PyCrypto
+* M2Crypto
 
 Reporting Issues
 --------
