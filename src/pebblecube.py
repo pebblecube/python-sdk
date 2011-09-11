@@ -13,18 +13,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
-from Crypto.Cipher import AES
 import urllib
 import urllib2
 import hashlib
 import pebblecubeSession
+import pebblecubeCrypt
 import json
 import os
 import base64
 
 json_parser = lambda s: json.loads(s)
-pad = lambda s: s + (16 - len(s) % 16) * " "
 
 class PebblecubeApi(object):
         api_key = ""
@@ -104,11 +102,10 @@ class PebblecubeApi(object):
                                 BLOCK_SIZE = 24
                         else:
                                 BLOCK_SIZE = 16
-
-                        KEY = self.api_secret[0:BLOCK_SIZE]
-                        cipher = AES.new(KEY, AES.MODE_CBC, iv)
                         
-                        return base64.b64encode(cipher.encrypt(pad(text)))
+                        KEY = self.api_secret[0:BLOCK_SIZE]
+                        e = pebblecubeCrypt.encryptor(KEY, iv)
+                        return e(text)
                 else:
                         return text
 
@@ -128,9 +125,8 @@ class PebblecubeApi(object):
                                 BLOCK_SIZE = 16
                         
                         KEY = self.api_secret[0:BLOCK_SIZE]
-                        cipher = AES.new(KEY, AES.MODE_CBC, base64.b64decode(iv))
-                        
-                        return cipher.decrypt(base64.b64decode(text)).strip().rstrip(chr(1))
+                        d = pebblecubeCrypt.decryptor(KEY, iv)
+                        return d(text)
                 else:
                         return text
 
